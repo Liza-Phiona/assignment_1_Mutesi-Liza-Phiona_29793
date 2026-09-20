@@ -134,22 +134,27 @@ Inserted Data
 ![Inserted Data](inserted.png)
 
  JOIN Queries
-
+JOIN Query 1
 ![JOIN 1](JOIN1.png)
 
+JOIN Query 2
 ![JOIN 2](JOIN2.png)
 
+JOIN Query 3
 ![JOIN 3](JOIN3.png)
 
  CTE Query
 ![CTE Query](CTE.png)
 
  Window Function Queries
-
+Query 1
 ![Window Function Query 1](WF%20Query1.png)
 
+Query 2
 ![Window Function Query 2](WF%20Query2.png)
 
+Query 3
 ![Window Function Query 3](WF%20Query%203.png)
 
+Query 4
 ![Window Function Query 4](WF%20Query4.png)
