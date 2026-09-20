@@ -1,0 +1,163 @@
+-- JOIN 1
+-- List every order with customer name, city and order date
+SELECT
+    o.order_id,
+    c.customer_name,
+    c.city,
+    o.order_date
+FROM ORDERS o
+INNER JOIN CUSTOMERS c
+    ON o.customer_id = c.customer_id
+ORDER BY o.order_date;
+
+
+-- JOIN 2
+-- List every order item with product information
+SELECT
+    oi.order_item_id,
+    oi.order_id,
+    p.product_name,
+    p.category,
+    p.price,
+    oi.quantity
+FROM order_items oi
+INNER JOIN PRODUCTS p
+    ON oi.product_id = p.product_id
+ORDER BY oi.order_id;
+
+
+
+-- JOIN 3
+-- Show all customers, including customers with no orders
+SELECT
+    c.customer_id,
+    c.customer_name,
+    c.city,
+    o.order_id,
+    o.order_date
+FROM CUSTOMERS c
+LEFT JOIN ORDERS o
+    ON c.customer_id = o.customer_id
+ORDER BY c.customer_id, o.order_date;
+
+
+
+-- CTE Query
+WITH customer_totals AS (
+    SELECT
+        c.customer_id,
+        c.customer_name,
+        SUM(oi.quantity * p.price) AS total_spend
+    FROM CUSTOMERS c
+    JOIN ORDERS o
+        ON c.customer_id = o.customer_id
+    JOIN ORDER_ITEMS oi
+        ON o.order_id = oi.order_id
+    JOIN PRODUCTS p
+        ON oi.product_id = p.product_id
+    GROUP BY
+        c.customer_id,
+        c.customer_name
+)
+SELECT
+    customer_id,
+    customer_name,
+    total_spend
+FROM customer_totals
+WHERE total_spend > (
+    SELECT AVG(total_spend)
+    FROM customer_totals
+)
+ORDER BY total_spend DESC;
+
+
+
+-- Window function Query1
+WITH customer_totals AS (
+    SELECT
+        c.customer_id,
+        c.customer_name,
+        SUM(oi.quantity * p.price) AS total_spend
+    FROM CUSTOMERS c
+    JOIN ORDERS o
+        ON c.customer_id = o.customer_id
+    JOIN ORDER_ITEMS oi
+        ON o.order_id = oi.order_id
+    JOIN PRODUCTS p
+        ON oi.product_id = p.product_id
+    GROUP BY
+        c.customer_id,
+        c.customer_name
+)
+SELECT
+    customer_id,
+    customer_name,
+    total_spend,
+    RANK() OVER (ORDER BY total_spend DESC) AS spending_rank
+FROM customer_totals
+ORDER BY spending_rank;
+
+
+
+
+-- Window function Query2
+SELECT
+    order_id,
+    customer_id,
+    order_date,
+    ROW_NUMBER() OVER (
+        PARTITION BY customer_id
+        ORDER BY order_date
+    ) AS order_number
+FROM ORDERS
+ORDER BY customer_id, order_date;
+
+
+
+--Window function Query 3
+WITH daily_revenue AS (
+    SELECT
+        o.order_date,
+        SUM(oi.quantity * p.price) AS daily_revenue
+    FROM ORDERS o
+    JOIN ORDER_ITEM oi
+        ON o.order_id = oi.order_id
+    JOIN PRODUCTS p
+        ON oi.product_id = p.product_id
+    GROUP BY o.order_date
+)
+SELECT
+    order_date,
+    daily_revenue,
+    SUM(daily_revenue) OVER (
+        ORDER BY order_date
+        ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+    ) AS running_total
+FROM daily_revenue
+ORDER BY order_date;
+
+
+
+-- Window Function Query 4
+WITH order_gaps AS (
+    SELECT
+        customer_id,
+        order_id,
+        order_date,
+        LAG(order_date) OVER (
+            PARTITION BY customer_id
+            ORDER BY order_date
+        ) AS previous_order_date
+    FROM ORDERS
+)
+SELECT
+    customer_id,
+    order_id,
+    order_date,
+    previous_order_date,
+    order_date - previous_order_date AS days_between_orders
+FROM order_gaps
+WHERE previous_order_date IS NOT NULL
+ORDER BY customer_id, order_date;
+
+
