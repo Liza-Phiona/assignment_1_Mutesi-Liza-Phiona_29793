@@ -120,10 +120,36 @@ Screenshots of the query results are included in the `screenshots` folder.
 CHALLENGES AND SOLUTIONS
 
 One challenge was setting up and connecting to the Oracle database correctly. This was resolved by using the correct Oracle service and connection settings.
-
 Another challenge was understanding JOINs, CTEs, and window functions. These were resolved by testing each query in Oracle SQL Developer and checking the results.
 
 CONCLUSION
 
 The database successfully stores and manages Sunrise Supermarket's customer, product, order, and order item information. 
 The SQL queries provide useful information about customer spending, purchasing patterns, and revenue.
+
+
+ Screenshots
+
+Inserted Data
+![Inserted Data](inserted.png)
+
+ JOIN Queries
+
+![JOIN 1](JOIN1.png)
+
+![JOIN 2](JOIN2.png)
+
+![JOIN 3](JOIN3.png)
+
+ CTE Query
+![CTE Query](CTE.png)
+
+ Window Function Queries
+
+![Window Function Query 1](WF%20Query1.png)
+
+![Window Function Query 2](WF%20Query2.png)
+
+![Window Function Query 3](WF%20Query%203.png)
+
+![Window Function Query 4](WF%20Query4.png)
